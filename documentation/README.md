@@ -315,12 +315,3 @@ The Schema Form Container is the "exposed" container containing a Form object an
 This callbacks can be triggered from external objects
 
 ![](doc_images/SchemaContainerDiagram.jpg)
-
-### Converter
-The Converter class have the callbacks to handle with multiple forms and and specific rules of this application.
-
-![](doc_images/ConverterDiagram.jpg)
-
-## Callbacks Flowchart Example
-
-![](doc_images/Get_Metadata_and_Export_Diagram.jpg)
