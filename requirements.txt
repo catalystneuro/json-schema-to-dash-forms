@@ -1,0 +1,4 @@
+numpy
+dash
+dash_bootstrap_components
+dash_cool_components

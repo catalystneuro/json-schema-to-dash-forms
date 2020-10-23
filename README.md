@@ -1,2 +1,2 @@
 # json-schema-to-dash-forms
-JSON schema to Dash forms
+Component that easily creates complex forms in Dash application directly from JSON schemas.
