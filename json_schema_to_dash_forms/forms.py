@@ -262,10 +262,7 @@ class SchemaForm(dbc.Card):
             self.id = parent_form.id + '-' + key
             self.container = parent_form.container
 
-        if 'definitions' in self.container.schema:
-            self.definitions = self.container.schema['definitions']
-        else:
-            self.definitions = dict()
+        self.definitions = self.container.schema.get('definitions', dict())
 
         header_text = schema.get('title', self.id.split('-')[-1])
         self.header = dbc.CardHeader(
@@ -357,7 +354,7 @@ class SchemaFormContainer(html.Div):
         self.data = {}
         self.children_forms = []
 
-        # Hidden componentes that serve to trigger callbacks
+        # Hidden components that serve to trigger callbacks
         self.children_triggers = [
             html.Div(id={'type': 'external-trigger-update-forms-values', 'index': id + '-external-trigger-update-forms-values'}, style={'display': 'none'}),
             html.Div(id={'type': 'external-trigger-update-links-values', 'index': f'{id}-external-trigger-update-links-values'}, style={"display": "none"}),
@@ -372,31 +369,32 @@ class SchemaFormContainer(html.Div):
         else:
             self.children = self.children_triggers
 
+        _args_dict = dict(type='metadata-input', container_id=f"{self.id}", index=ALL)
+
         self.update_forms_links_callback_outputs = [
-            Output({'type': 'metadata-input', 'container_id': f"{self.id}", 'data_type': 'link', 'index': ALL}, 'options'),
-            Output({'type': 'metadata-input', 'container_id': f"{self.id}", 'data_type': 'link', 'index': ALL}, 'value'),
+            Output(dict(_args_dict, data_type='link'), 'options'),
+            Output(dict(_args_dict, data_type='link'), 'value'),
             Output(self.id + '-output-placeholder-links-values', 'children')
         ]
 
         self.update_forms_values_callback_outputs = [
-            Output({'type': 'metadata-input', 'container_id': f"{self.id}", 'data_type': 'path', 'index': ALL}, 'value'),
-            Output({'type': 'metadata-input', 'container_id': f"{self.id}", 'data_type': 'boolean', 'index': ALL}, 'checked'),
-            Output({'type': 'metadata-input', 'container_id': f"{self.id}", 'data_type': 'string', 'index': ALL}, 'value'),
-            Output({'type': 'metadata-input', 'container_id': f"{self.id}", 'data_type': 'datetime', 'index': ALL}, 'defaultValue'),
-            Output({'type': 'metadata-input', 'container_id': f"{self.id}", 'data_type': 'tags', 'index': ALL}, 'injectedTags'),
-            Output({'type': 'metadata-input', 'container_id': f"{self.id}", 'data_type': 'name', 'index': ALL}, 'value'),
-            Output({'type': 'metadata-input', 'container_id': f"{self.id}", 'data_type': 'number', 'index': ALL}, 'value'),
+            Output(dict(_args_dict, data_type='path'), 'value'),
+            Output(dict(_args_dict, data_type='boolean'), 'checked'),
+            Output(dict(_args_dict, data_type='string'), 'value'),
+            Output(dict(_args_dict, data_type='datetime'), 'defaultValue'),
+            Output(dict(_args_dict, data_type='tags'), 'injectedTags'),
+            Output(dict(_args_dict, data_type='name'), 'value'),
+            Output(dict(_args_dict, data_type='number'), 'value'),
             Output(f'{self.id}-trigger-update-links-values', 'children')
         ]
         self.update_forms_values_callback_states = [
-            State({'type': 'metadata-input', 'container_id': f"{self.id}", 'data_type': 'path', 'index': ALL}, 'value'),
-            State({'type': 'metadata-input', 'container_id': f"{self.id}", 'data_type': 'boolean', 'index': ALL}, 'checked'),
-            State({'type': 'metadata-input', 'container_id': f"{self.id}", 'data_type': 'string', 'index': ALL}, 'value'),
-            State({'type': 'metadata-input', 'container_id': f"{self.id}", 'data_type': 'datetime', 'index': ALL}, 'value'),
-            State({'type': 'metadata-input', 'container_id': f"{self.id}", 'data_type': 'tags', 'index': ALL}, 'value'),
-            State({'type': 'metadata-input', 'container_id': f"{self.id}", 'data_type': 'name', 'index': ALL}, 'value'),
-            State({'type': 'metadata-input', 'container_id': f"{self.id}", 'data_type': 'number', 'index': ALL},
-                  'value'),
+            State(dict(_args_dict, data_type='path'), 'value'),
+            State(dict(_args_dict, data_type='boolean'), 'checked'),
+            State(dict(_args_dict, data_type='string'), 'value'),
+            State(dict(_args_dict, data_type='datetime'), 'value'),
+            State(dict(_args_dict, data_type='tags'), 'value'),
+            State(dict(_args_dict, data_type='name'), 'value'),
+            State(dict(_args_dict, data_type='number'), 'value'),
         ]
 
         @self.parent_app.callback(
