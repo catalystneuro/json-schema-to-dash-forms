@@ -454,8 +454,8 @@ class SchemaFormContainer(html.Div):
                     names_counter += 1
                 elif e['data_type'] == 'number':
                     field_value = number_values[number_counter]
-                    print(f'number: {k}')
-                    print(field_value)
+                    #print(f'number: {k}')
+                    #print(field_value)
                     if isinstance(field_value, list):
                         field_value = field_value[0]
                     number_counter += 1
@@ -588,7 +588,13 @@ class SchemaFormContainer(html.Div):
                 else:
                     inner_key = k
                 self.update_data(data=v, key=inner_key)
-            # If value is a string, number, list or boolean
+            # If value is a list of dicts
+            elif isinstance(v, list) and len(v) > 0 and isinstance(v[0], dict):
+                for i, e in enumerate(v):
+                    for i_key, i_value in e.items():
+                        component_id = f'{key}-{k}-{i}-{i_key}'
+                        self.data[component_id]['value'] = i_value
+            # If value is a string, number, list of strings or boolean
             else:
                 component_id = key + '-' + k  # e.g. NWBFile-session_description
                 self.data[component_id]['value'] = v
