@@ -9,6 +9,7 @@ import numpy as np
 from dash.dependencies import Input, Output, State, ALL
 from dash_cool_components import TagInput, DateTimePicker
 from pathlib import Path
+from collections import Counter
 
 from .utils import make_filebrowser_modal
 
@@ -419,50 +420,38 @@ class SchemaFormContainer(html.Div):
             if trigger is None:
                 return []
 
-            boolean_counter = 0
-            path_counter = 0
-            datetime_counter = 0
-            string_counter = 0
-            tags_counter = 0
-            link_counter = 0
-            names_counter = 0
-            number_counter = 0
+            counter = Counter()
 
             for e in ids:
                 k = e['index']
-                # v = self.data[k]
-                # for k, v in self.data.items():
-                    # if e['index'] == k:
                 if e['data_type'] == 'path':
                     root_path = Path(self.parent_app.server.config['DATA_PATH']).parent
-                    path_v = path_values[path_counter] if path_values[path_counter] is not None else ''
+                    path_v = path_values[counter['paths']] if path_values[counter['paths']] is not None else ''
                     field_value = str(root_path / path_v)
-                    path_counter += 1
+                    counter['paths'] += 1
                 elif e['data_type'] == 'boolean':
-                    field_value = boolean_values[boolean_counter]
-                    boolean_counter += 1
+                    field_value = boolean_values[counter['booleans']]
+                    counter['booleans'] += 1
                 elif e['data_type'] == 'datetime':
-                    field_value = datetime_values[datetime_counter]
-                    datetime_counter += 1
+                    field_value = datetime_values[counter['datetimes']]
+                    counter['datetimes'] += 1
                 elif e['data_type'] == 'string':
-                    field_value = string_values[string_counter]
-                    string_counter += 1
+                    field_value = string_values[counter['strings']]
+                    counter['strings'] += 1
                 elif e['data_type'] == 'name':
-                    field_value = name_values[names_counter]
-                    names_counter += 1
+                    field_value = name_values[counter['names']]
+                    counter['names'] += 1
                 elif e['data_type'] == 'number':
-                    field_value = number_values[number_counter]
-                    #print(f'number: {k}')
-                    #print(field_value)
+                    field_value = number_values[counter['numbers']]
                     if isinstance(field_value, list):
                         field_value = field_value[0]
-                    number_counter += 1
+                    counter['numbers'] += 1
                 elif e['data_type'] == 'tags':
-                    field_value = tags_values[tags_counter]
-                    tags_counter += 1
+                    field_value = tags_values[counter['tags']]
+                    counter['tags'] += 1
                 elif e['data_type'] == 'link':
-                    field_value = link_values[link_counter]
-                    link_counter += 1
+                    field_value = link_values[counter['links']]
+                    counter['links'] += 1
 
                 self.data[k]['value'] = field_value
 
