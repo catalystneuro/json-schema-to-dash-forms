@@ -482,11 +482,10 @@ class SchemaFormContainer(html.Div):
             output_string = []
             output_date = []
             output_tags = []
-            output_link = []
+            # output_link = []
             output_name = []
             output_number = []
 
-            curr_data = list()
             for v in self.data.values():
                 if v['compound_id']['data_type'] == 'path':
                     output_path.append(v['value'])
@@ -522,11 +521,19 @@ class SchemaFormContainer(html.Div):
             [State({'type': 'metadata-input', 'container_id': f"{self.id}", 'data_type': 'name', 'index': ALL}, 'value')]
         )
         def update_forms_links(trigger, trigger_all, name_change):
+
             ctx = dash.callback_context
             trigger_source = ctx.triggered[0]['prop_id'].split('.')[0]
 
-            if 'index' in trigger_source:
-                trigger_source = json.loads(trigger_source)['index']
+            if not trigger_source:
+                raise dash.exceptions.PreventUpdate
+
+            trigger_source = json.loads(trigger_source)['type']
+
+            if trigger_source == 'external-trigger-update-links-values' and trigger is None:
+                raise dash.exceptions.PreventUpdate
+            if trigger_source == f'{self.id}-trigger-update-links-values' and all((trg is None) or trg == [] or trg == '' for trg in trigger_all):
+                raise dash.exceptions.PreventUpdate
 
             i = 0
             for k, v in self.data.items():
