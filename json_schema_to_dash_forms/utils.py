@@ -43,7 +43,7 @@ class FileBrowserComponent(html.Div):
         self.id_suffix = id_suffix
 
         if root_dir is None:
-            self.root_dir = parent_app.server.config['DATA_PATH']
+            self.root_dir = parent_app.server.config.get('DATA_PATH', Path.cwd())
         else:
             self.root_dir = root_dir
 
