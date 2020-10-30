@@ -354,6 +354,7 @@ class SchemaFormContainer(html.Div):
         self.parent_app = parent_app
         self.data = {}
         self.children_forms = []
+        self.root_path = Path(self.parent_app.server.config['DATA_PATH']).parent
 
         # Hidden components that serve to trigger callbacks
         self.children_triggers = [
@@ -425,9 +426,8 @@ class SchemaFormContainer(html.Div):
             for e in ids:
                 k = e['index']
                 if e['data_type'] == 'path':
-                    root_path = Path(self.parent_app.server.config['DATA_PATH']).parent
                     path_v = path_values[counter['paths']] if path_values[counter['paths']] is not None else ''
-                    field_value = str(root_path / path_v)
+                    field_value = str(self.root_path / path_v)
                     counter['paths'] += 1
                 elif e['data_type'] == 'boolean':
                     field_value = boolean_values[counter['booleans']]
@@ -482,7 +482,6 @@ class SchemaFormContainer(html.Div):
             output_string = []
             output_date = []
             output_tags = []
-            # output_link = []
             output_name = []
             output_number = []
 
@@ -528,7 +527,8 @@ class SchemaFormContainer(html.Div):
             if not trigger_source:
                 raise dash.exceptions.PreventUpdate
 
-            trigger_source = json.loads(trigger_source)['type']
+            if 'type' in trigger_source:
+                trigger_source = json.loads(trigger_source)['type']
 
             if trigger_source == 'external-trigger-update-links-values' and trigger is None:
                 raise dash.exceptions.PreventUpdate
@@ -625,7 +625,7 @@ class SchemaFormContainer(html.Div):
 
         for k, v in self.data.items():
             field_value = v['value']
-            if v['required'] and (field_value is None or (isinstance(field_value, str) and field_value.isspace()) or field_value == ''):
+            if v['required'] and (field_value is None or (isinstance(field_value, str) and field_value.isspace()) or field_value == '' or (str(field_value) == str(self.root_path))):
                 empty_required_fields.append(k)
                 alert_children.append(html.A(
                     k,
