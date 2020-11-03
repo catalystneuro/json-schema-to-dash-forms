@@ -654,10 +654,25 @@ class SchemaFormContainer(html.Div):
                 master_key_name=master_key_name
             )
 
+        output = SchemaFormContainer._fix_nested_list_fields(output)
+
         if len(empty_required_fields) > 0:
             return alert_children, output
         else:
             return None, output
+
+    @staticmethod
+    def _fix_nested_list_fields(data):
+        for k, v in data.items():
+            if isinstance(v, dict):
+                if list(v.keys())[0].isdigit():
+                    aux_list = list()
+                    for key in list(v.keys()):
+                        aux_list.append(v[key])
+                    data[k] = aux_list
+                SchemaFormContainer._fix_nested_list_fields(v)
+
+        return data
 
     @staticmethod
     def _create_nested_dict(data, output, master_key_name):
