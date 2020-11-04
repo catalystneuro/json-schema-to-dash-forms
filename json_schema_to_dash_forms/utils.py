@@ -150,10 +150,11 @@ class FileBrowserComponent(html.Div):
             keys_list.append(aux_dict)
 
         # Simplify file explorer to start on the base path defined on config
-        for e in keys_list:
-            splitted = e['key'].split(splitter, maxsplit=1)[1]
-            if splitted.startswith('/'):
-                splitted = splitted[1:]
-                e['key'] = splitted
+        if splitter:
+            for e in keys_list:
+                splitted = e['key'].split(splitter, maxsplit=1)[1]
+                if splitted.startswith('/'):
+                    splitted = splitted[1:]
+                    e['key'] = splitted
 
         self.paths_tree = keys_list
