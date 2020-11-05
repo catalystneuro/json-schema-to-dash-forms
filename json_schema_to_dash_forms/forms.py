@@ -654,36 +654,26 @@ class SchemaFormContainer(html.Div):
                 master_key_name=master_key_name
             )
 
-        output = SchemaFormContainer._fix_nested_list_fields(output)
-
         if len(empty_required_fields) > 0:
             return alert_children, output
         else:
             return None, output
 
     @staticmethod
-    def _fix_nested_list_fields(data):
-        for k, v in data.items():
-            if isinstance(v, dict):
-                if list(v.keys())[0].isdigit():
-                    aux_list = list()
-                    for key in list(v.keys()):
-                        aux_list.append(v[key])
-                    data[k] = aux_list
-                SchemaFormContainer._fix_nested_list_fields(v)
-
-        return data
-
-    @staticmethod
     def _create_nested_dict(data, output, master_key_name):
         for k, v in data.items():
             if isinstance(v, dict):
-                if k == master_key_name and k not in output:
-                    output[k] = {}
-                    SchemaFormContainer._create_nested_dict(v, output[k], master_key_name)
-                elif k != master_key_name and k not in output:
-                    output[k] = {}
-                    SchemaFormContainer._create_nested_dict(v, output[k], master_key_name)
+                if isinstance(output, list) or k not in output:
+                    if list(v.keys())[0].isdigit():
+                        output[k] = list()
+                    elif k.isdigit() and int(k) == len(output):
+                        output.append(dict())
+                    elif not k.isdigit():
+                        output[k] = dict()
+                    if isinstance(output, dict):
+                        SchemaFormContainer._create_nested_dict(v, output[k], master_key_name)
+                    elif isinstance(output, list):
+                        SchemaFormContainer._create_nested_dict(v, output[int(k)], master_key_name)
                 else:
                     SchemaFormContainer._create_nested_dict(v, output[k], master_key_name)
             else:
