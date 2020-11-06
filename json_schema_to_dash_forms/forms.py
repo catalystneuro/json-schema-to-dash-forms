@@ -530,9 +530,9 @@ class SchemaFormContainer(html.Div):
             if 'type' in trigger_source:
                 trigger_source = json.loads(trigger_source)['type']
 
-            if trigger_source == 'external-trigger-update-links-values' and trigger is None:
+            if trigger_source == 'external-trigger-update-links-values' and all((trg is None) or trg == [] or trg == '' for trg in trigger_all):
                 raise dash.exceptions.PreventUpdate
-            if trigger_source == f'{self.id}-trigger-update-links-values' and all((trg is None) or trg == [] or trg == '' for trg in trigger_all):
+            if trigger_source == f'{self.id}-trigger-update-links-values' and trigger is None:
                 raise dash.exceptions.PreventUpdate
 
             i = 0
