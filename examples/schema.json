@@ -21,23 +21,88 @@
           "format": "file",
           "description": "a path to file field"
         },
-        "string": {
+        "folder": {
           "type": "string",
-          "description": "a string field"
+          "format": "directory",
+          "description": "a path to a directory"
+        },
+        "some_boolean_option": {
+          "type": "boolean",
+          "default": true,
+          "description": "a boolean field"
         }
+
       }
     },
 
     "form_2": {
       "title": "Form 2",
       "type": "object",
+      "required": ["string_field"],
       "properties": {
-        "add_raw": {
-          "type": "boolean",
-          "default": true,
-          "description": "a boolean field"
-        }
+        "string_field": {
+          "type": "string",
+          "description": "a simple string field"
+        },
+        "textarea_field": {
+          "type": "string",
+          "format": "long",
+          "description": "a textarea form field"
+        },
+        "datetime_field": {
+          "type": "string",
+          "description": "datetime timezone field",
+          "format": "date-time"
+        },
+        "tag_list_field": {
+          "type": "array",
+          "items": {"type": "string", "title": "tag_field"},
+          "description": "tags list field example"
+        },
+        "dropdown_field": {
+          "type": "string",
+          "enum": ["M", "F", "U", "O"],
+          "default": "U"
+        },
+       "numeric_field": {
+	      "type": "number",
+	      "description": "simple numeric field"
+	    },
+	    "Subform_1": {
+	    	"title": "Subform 1",
+	    	"type": "object",
+	    	"required": ["subform_string"],
+	    	"properties": {
+	    		"subform_string": {
+	    			"type": "string",
+	    			"description": "a subform string field example"
+	    		},
+	    		"subform_children_array_example": {
+	    			"type": "array",
+		            "description": "subforms children array w/ size defined by min/max items and referenced by definitions",
+		            "minItems": 2,
+		            "maxItems": 2,
+		            "items": [{"$ref":  "#/definitions/ChildrenExample"}]
+	    		}
+	    	}
+	    }
       }
     }
-  }
+  },
+	"definitions": {
+	    "ChildrenExample": {
+	      "type": "object",
+	      "required": ["string"],
+	      "properties": {
+	        "string": {
+	          "type": "string",
+	          "description": "children string field"
+	        },
+	        "description": {
+	          "type": "number",
+	          "description": "children numeric field"
+	        }
+	      }
+	    }
+	}
 }

@@ -1,0 +1,48 @@
+.item{
+    margin:0;
+    padding: 0;
+    text-align: left;
+    justify-content: left;
+}
+
+.string_input, .dropdown_input, .date_input, .boolean_input{
+    height: 25px;
+    margin:0px;
+}
+
+
+.SingleDatePickerInput {
+    border: 0px;
+}
+
+/* Fix the font size, border color and other stuff of datepicker*/
+.DateInput_input, .DateInput_input_1 {
+    text-align: center;
+    line-height: calc(1.5em + 0.75rem);
+    height: 25px;
+    font-size: 0.9375rem;
+    font-weight: 400;
+    color: black;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.nav-link{
+    color: #d7d7d7;
+    font-size: 1.2rem
+}
+.nav-link:hover{
+    color: #d17128
+}
+
+.cardLink{
+    color: black;
+    font-weight: 500;
+}
+
+.cardLink:hover{
+    color: #114b7c
+}
