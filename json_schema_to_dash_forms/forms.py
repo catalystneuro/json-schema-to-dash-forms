@@ -568,6 +568,17 @@ class SchemaFormContainer(html.Div):
 
             return output
 
+    def update_lists_data(self, v, key, k):
+        for i, e in enumerate(v):
+            for i_key, i_value in e.items():
+                if isinstance(i_value, list):
+                    inner_key = f'{key}-{k}-{i}'
+                    self.update_lists_data(i_value, inner_key, i_key)
+                else:
+                    component_id = f'{key}-{k}-{i}-{i_key}'
+                    self.data[component_id]['value'] = i_value
+        return
+
     def update_data(self, data, key=None):
         """Update data in the internal mapping dictionary of this Container"""
         if key is None:
@@ -584,10 +595,7 @@ class SchemaFormContainer(html.Div):
                 self.update_data(data=v, key=inner_key)
             # If value is a list of dicts
             elif isinstance(v, list) and len(v) > 0 and isinstance(v[0], dict):
-                for i, e in enumerate(v):
-                    for i_key, i_value in e.items():
-                        component_id = f'{key}-{k}-{i}-{i_key}'
-                        self.data[component_id]['value'] = i_value
+                self.update_lists_data(v, key, k)
             # If value is a string, number, list of strings or boolean
             else:
                 component_id = key + '-' + k  # e.g. NWBFile-session_description
