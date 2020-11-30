@@ -122,6 +122,7 @@ class FileBrowserComponent(html.Div):
         paths_list = []
         for path, dirs, files in os.walk(self.root_dir):
             curr_path = path + '/'
+
             if curr_path.startswith('/'):
                 curr_path = curr_path[1:]
             if curr_path not in paths_list:
@@ -141,7 +142,6 @@ class FileBrowserComponent(html.Div):
 
                     keys_list.append(aux_dict)
 
-        splitter = Path(self.root_dir).parent.name
         for path in paths_list:
             aux_dict = dict()
             aux_dict['key'] = str(path).replace("\\", '/')
@@ -150,11 +150,17 @@ class FileBrowserComponent(html.Div):
             keys_list.append(aux_dict)
 
         # Simplify file explorer to start on the base path defined on config
+        splitter = Path(self.root_dir).parent.name
+        if str(Path(self.root_dir).parent) == '.':
+            splitter = '.'
         if splitter:
             for e in keys_list:
                 splitted = e['key'].split(splitter, maxsplit=1)[1]
                 if splitted.startswith('/'):
                     splitted = splitted[1:]
+                    e['key'] = splitted
+                elif splitted.startswith('.'):
+                    splitted = splitted[2:]
                     e['key'] = splitted
 
         self.paths_tree = keys_list
