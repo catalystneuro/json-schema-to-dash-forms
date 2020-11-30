@@ -49,10 +49,14 @@ class FileBrowserComponent(html.Div):
 
         self.make_dict_from_dir(display=display)
 
+        button_text = 'Choose file'
+        if display == 'directory':
+            button_text = 'Choose dir'
+
         # Button part
         input_group = dbc.InputGroup([
             dbc.InputGroupAddon(
-                dbc.Button('Choose file', color='dark', id="button_file_browser_" + id_suffix),
+                dbc.Button(button_text, color='dark', id="button_file_browser_" + id_suffix),
                 addon_type="prepend",
             ),
             dbc.Input(id="chosen-filebrowser-" + id_suffix, placeholder=""),
