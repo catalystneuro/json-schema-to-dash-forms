@@ -41,16 +41,17 @@ class FileBrowserComponent(html.Div):
         super().__init__([])
         self.parent_app = parent_app
         self.id_suffix = id_suffix
+        self.display = display
 
         if root_dir is None:
             self.root_dir = parent_app.server.config.get('DATA_PATH', Path.cwd())
         else:
             self.root_dir = root_dir
 
-        self.make_dict_from_dir(display=display)
+        self.make_dict_from_dir(display=self.display)
 
         button_text = 'Choose file'
-        if display == 'directory':
+        if self.display == 'directory':
             button_text = 'Choose dir'
 
         # Button part
@@ -63,7 +64,7 @@ class FileBrowserComponent(html.Div):
             dbc.InputGroupAddon(
                 dbc.Button('Submit', color='dark', id='submit-filebrowser-' + id_suffix),
                 addon_type='prepend',
-            )
+            ),
         ])
 
         # Collapsible part - file browser
@@ -78,8 +79,19 @@ class FileBrowserComponent(html.Div):
                     )),
                     id="collapse_file_browser_" + id_suffix,
                 ),
+                html.Div(id=f'trigger_update_tree_{self.id_suffix}', style={'display': 'none'})
             ])
         ]
+
+        @self.parent_app.callback(
+            Output(f'keyedfilebrowser-{self.id_suffix}', 'files'),
+            [Input(f'trigger_update_tree_{self.id_suffix}', 'children')]
+        )
+        def update_files_tree(trigger):
+            # This function updates file browser tree when refresh
+            self.make_dict_from_dir(self.display)
+            return self.paths_tree
+
 
         @self.parent_app.callback(
             [
@@ -168,3 +180,4 @@ class FileBrowserComponent(html.Div):
                     e['key'] = splitted
 
         self.paths_tree = keys_list
+        #print(self.paths_tree)
