@@ -346,7 +346,7 @@ class SchemaFormContainer(html.Div):
     id + '-external-trigger-update-links-values'
     """
 
-    def __init__(self, id, schema, parent_app):
+    def __init__(self, id, schema, parent_app, root_path=None):
         super().__init__([])
 
         self.id = id
@@ -354,6 +354,12 @@ class SchemaFormContainer(html.Div):
         self.parent_app = parent_app
         self.data = {}
         self.children_forms = []
+
+        if root_path is not None:
+            self.parent_app.server.config['DATA_PATH'] = root_path
+        else:
+            self.parent_app.server.config['DATA_PATH'] = Path.cwd()
+
         self.root_path = Path(self.parent_app.server.config['DATA_PATH']).parent
 
         # Hidden components that serve to trigger callbacks

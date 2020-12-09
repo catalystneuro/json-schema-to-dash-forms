@@ -169,9 +169,14 @@ class FileBrowserComponent(html.Div):
         splitter = Path(self.root_dir).parent.name
         if str(Path(self.root_dir).parent) == '.':
             splitter = '.'
+
         if splitter:
             for e in keys_list:
-                splitted = e['key'].split(splitter, maxsplit=1)[1]
+                splits = e['key'].split(splitter, maxsplit=1)
+                if len(splits) > 1:
+                    splitted = splits[1]
+                else:
+                    splitted = splits[0]
                 if splitted.startswith('/'):
                     splitted = splitted[1:]
                     e['key'] = splitted
