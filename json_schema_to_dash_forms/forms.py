@@ -257,7 +257,7 @@ class SchemaForm(dbc.Card):
 
         # Unique Card IDs are composed by parent id + key from json schema
         if parent_form is None:
-            self.id = key
+            self.id = f'{container.id}-{key}'
             self.container = container
         else:
             self.id = parent_form.id + '-' + key
@@ -475,6 +475,10 @@ class SchemaFormContainer(html.Div):
         def update_forms_values(trigger, trigger_all, *states):
             ctx = dash.callback_context
             trigger_source = ctx.triggered[0]['prop_id'].split('.')[0]
+
+            if not trigger_source:
+                return dash.no_update
+
             context = json.loads(trigger_source)
 
             if context['type'] == 'external-trigger-update-forms-values' and all((trg is None) or trg == [] for trg in trigger):
@@ -588,7 +592,7 @@ class SchemaFormContainer(html.Div):
     def update_data(self, data, key=None):
         """Update data in the internal mapping dictionary of this Container"""
         if key is None:
-            key = ''
+            key = self.id
 
         # Update dict with incoming data
         for k, v in data.items():
@@ -655,9 +659,10 @@ class SchemaFormContainer(html.Div):
                 for element in reversed(splited_keys):
                     if element == field_name:
                         curr_dict = {field_name: v['value']}
-                    else:
+                    elif element != master_key_name:
                         curr_dict = {element: curr_dict}
-                    if element == master_key_name:
+                    else:
+                    #if element == master_key_name:
                         dicts_list.append(curr_dict)
 
         for e in dicts_list:
