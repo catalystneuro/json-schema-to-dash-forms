@@ -247,6 +247,97 @@ ImagingPlane:
 
 ![](doc_images/documentation_linkchoice.JPG)
 
+### Folder/File field
+
+<table>
+<tr>
+<td>Schema</td>
+<td>Data JSON</td>
+<td>Data YAML</td>
+</tr>
+<tr>
+<td>
+<pre lang="json">
+"FolderFileForm": {
+  "type": "object",
+  "properties": {
+    "file_field": {
+      "type": "string",
+      "format": "file",
+      "description": "a path to file field"
+    },
+    "dir_field": {
+      "type": "string",
+      "format": "directory",
+      "description": "a path to file field"
+    }
+  }
+},
+</pre>
+</td>
+<td>
+<pre lang="json">
+"DirFileForm": {
+  "file": "path/to/file",
+  "directory": "path/to/dir"
+}
+</pre>
+</td>
+<td>
+<pre lang="yaml">
+DirFileForm:
+  file: "path/to/file
+  directory: "path/to/dir"
+</pre>
+</td>
+</tr>
+</table>
+
+![](doc_images/file_folder_fields.png)
+
+
+
+### Boolean field
+
+<table>
+<tr>
+<td>Schema</td>
+<td>Data JSON</td>
+<td>Data YAML</td>
+</tr>
+<tr>
+<td>
+<pre lang="json">
+"BooleanForm": {
+  "type": "object",
+  "properties": {
+  "some_boolean_option": {
+      "type": "boolean",
+      "default": true,
+      "description": "a boolean field"
+    }
+  }
+},
+</pre>
+</td>
+<td>
+<pre lang="json">
+"BooleanForm": {
+  "some_boolean_option": true
+}
+</pre>
+</td>
+<td>
+<pre lang="yaml">
+BooleanForm:
+  some_boolean_option: true
+</pre>
+</td>
+</tr>
+</table>
+
+![](doc_images/boolean_field.png)
+
 
 ### Subform list field
 
