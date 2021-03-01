@@ -258,7 +258,7 @@ ImagingPlane:
 <tr>
 <td>
 <pre lang="json">
-"FolderFileForm": {
+"DirectoryFileForm": {
   "type": "object",
   "properties": {
     "file_field": {
@@ -269,7 +269,7 @@ ImagingPlane:
     "dir_field": {
       "type": "string",
       "format": "directory",
-      "description": "a path to file field"
+      "description": "a path to directory field"
     }
   }
 },
@@ -277,7 +277,7 @@ ImagingPlane:
 </td>
 <td>
 <pre lang="json">
-"FolderFileForm": {
+"DirectoryFileForm": {
   "file": "path/to/file",
   "directory": "path/to/dir"
 }
@@ -285,7 +285,7 @@ ImagingPlane:
 </td>
 <td>
 <pre lang="yaml">
-FolderFileForm:
+DirectoryFileForm:
   file: "path/to/file"
   directory: "path/to/dir"
 </pre>
