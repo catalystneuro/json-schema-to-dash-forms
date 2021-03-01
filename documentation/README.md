@@ -277,7 +277,7 @@ ImagingPlane:
 </td>
 <td>
 <pre lang="json">
-"DirFileForm": {
+"FolderFileForm": {
   "file": "path/to/file",
   "directory": "path/to/dir"
 }
@@ -285,8 +285,8 @@ ImagingPlane:
 </td>
 <td>
 <pre lang="yaml">
-DirFileForm:
-  file: "path/to/file
+FolderFileForm:
+  file: "path/to/file"
   directory: "path/to/dir"
 </pre>
 </td>
