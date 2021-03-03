@@ -152,10 +152,10 @@ class SchemaFormItem(dbc.FormGroup):
 
         elif value['type'] == 'boolean':
             compound_id['data_type'] = 'boolean'
-            default = value['default']
+            default = value.get('default', False)
             field_input = dbc.Checkbox(
                 id=compound_id,
-                checked=value['default']
+                checked=default
             )
 
         else:
