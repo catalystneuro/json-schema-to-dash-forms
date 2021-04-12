@@ -301,13 +301,17 @@ class SchemaForm(dbc.Card):
             # If item is a field
             if 'type' in v and (v['type'] == 'array'):
                 # If field is an array of subforms, e.g. ImagingPlane.optical_channels
-                if isinstance(v['items'], list):
+                if v.get('minItems', None): #isinstance(v['items'], list):
                     value = []
-                    if '$ref' in v['items'][0]:
-                        template_name = v['items'][0]['$ref'].split('/')[-1]
-                        schema = self.definitions[template_name]
+                    if '$ref' in v['items']:  # search for reference somewhere else in the root schema
+                        for i in v['items']['$ref'].split('/'):
+                            if i == '#':
+                                aux = self.container.schema
+                            else:
+                                aux = aux.get(i)
+                        schema = aux
                     else:
-                        schema = v['items'][0]
+                        schema = v['items']
                     for index in range(v['minItems']):
                         iform = SchemaForm(schema=schema, key=f'{k}-{index}', parent_form=self)
                         value.append(iform)

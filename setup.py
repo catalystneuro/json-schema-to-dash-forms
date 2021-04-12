@@ -11,7 +11,7 @@ with open('requirements.txt') as f:
 
 setup(
     name='json_schema_to_dash_forms',
-    version='0.1.0',
+    version='0.1.6',
     description='JSON schema to Dash forms',
     long_description=long_description,
     long_description_content_type='text/markdown',
