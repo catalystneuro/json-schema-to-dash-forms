@@ -610,6 +610,9 @@ class SchemaFormContainer(html.Div):
             # If value is a list of dicts
             elif isinstance(v, list) and len(v) > 0 and isinstance(v[0], dict):
                 self.update_lists_data(v, key, k)
+            # If no value on list of dicts
+            elif isinstance(v, list) and len(v) == 0:
+                continue
             # If value is a string, number, list of strings or boolean
             else:
                 component_id = key + '-' + k  # e.g. NWBFile-session_description
