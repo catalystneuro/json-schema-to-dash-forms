@@ -301,7 +301,7 @@ class SchemaForm(dbc.Card):
             # If item is a field
             if 'type' in v and (v['type'] == 'array'):
                 # If field is an array of subforms, e.g. ImagingPlane.optical_channels
-                if v.get('minItems', None): #isinstance(v['items'], list):
+                if 'minItems' in v: 
                     value = []
                     if '$ref' in v['items']:  # search for reference somewhere else in the root schema
                         for i in v['items']['$ref'].split('/'):
@@ -318,6 +318,9 @@ class SchemaForm(dbc.Card):
 
                 # If field is an array of strings, e.g. NWBFile.experimenter
                 elif isinstance(v['items'], dict):
+                    value = v
+                # Other cases
+                else:
                     value = v
 
             # If field is a simple input field, e.g. description
