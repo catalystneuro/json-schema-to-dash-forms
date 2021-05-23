@@ -633,6 +633,9 @@ class SchemaFormContainer(html.Div):
         # Construct children forms
         if 'properties' in self.schema:
             for form_key, form_value in self.schema['properties'].items():
+                if "renderForm" in form_value and not form_value['renderForm']:
+                    self.skiped_forms.extend(form_key)
+                    continue
                 iform = SchemaForm(
                     schema=form_value,
                     key=form_key,
