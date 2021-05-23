@@ -399,6 +399,32 @@ ImagingPlane:
 
 ![](doc_images/documentation_subformlist.JPG)
 
+### Skip Form Render
+You can skip the render of some parts of your form schema passing the key **renderForm** as **True**
+
+<table>
+<tr>
+<td>Schema</td>
+</tr>
+<tr>
+<td>
+<pre lang="json">
+"FormToSkip": {
+    "renderForm": false,
+    "type": "array",
+    "minItems": 2,
+    "maxItems": 2,
+    "items": [
+        {"$ref":  "#/definitions/someRef"}
+      ]
+    }
+  }
+}
+</pre>
+</tr>
+</table>
+
+
 ## Callback Definitions
 
 ### Schema Form Container
