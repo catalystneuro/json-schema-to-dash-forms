@@ -421,24 +421,28 @@ class SchemaFormContainer(html.Div):
             State(dict(_args_dict, data_type='number'), 'value'),
         ]
 
-        @self.parent_app.callback(
+        self.parent_app.clientside_callback(
+            """
+            function(n_clicks, state){
+
+                 //const element = document.getElementById(JSON.stringify(ids, Object.keys(ids).sort()))
+
+                 ctx = dash_clientside.callback_context
+                 
+                 if (typeof ctx.triggered[0] === "undefined"){
+                     return dash_clientside.no_update
+                 }
+                 if (n_clicks){
+                     return !state
+                 }
+                 return dash_clientside.no_update
+
+            }
+            """,
             Output({"type":'collapsible-body', "container": f'{self.id}', "index": MATCH}, 'is_open'),
             [Input({"type": 'collapsible-toggle', "container": f'{self.id}', "index": MATCH}, 'n_clicks')],
             [State({"type":'collapsible-body', "container": f'{self.id}', "index": MATCH}, 'is_open')]
         )
-        def collapsible(n_clicks, state):
- 
-            ctx = dash.callback_context
-            trigger_source = ctx.triggered[0]['prop_id'].split('.')[0]
-
-            if not trigger_source:
-                return dash.no_update
-
-            if n_clicks:
-                return not state
-
-            return dash.no_update
-
 
         @self.parent_app.callback(
             Output(f'{self.id}-output-update-finished-verification', 'children'),
