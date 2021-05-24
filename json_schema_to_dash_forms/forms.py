@@ -6,7 +6,7 @@ import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 import numpy as np
-from dash.dependencies import Input, Output, State, ALL
+from dash.dependencies import Input, Output, State, ALL, MATCH
 from dash_cool_components import TagInput, DateTimePicker
 from pathlib import Path
 from collections import Counter
@@ -268,11 +268,10 @@ class SchemaForm(dbc.Card):
 
         header_text = schema.get('title', self.id.split('-')[-1])
         self.header = dbc.CardHeader(
-            [html.H4(header_text, className="title_" + key)],
+            [dbc.Button(html.H4(header_text, style={"color": 'black'}, className="title_" + key), color='link', id={"type": "collapsible-toggle", "container": f"{self.container.id}", 'index': f'{self.id}-collapsible'})],
             style={'padding': '10px'}
         )
         self.body = dbc.CardBody([])
-        self.children = [self.header, self.body]
 
         self.required_fields = schema.get('required', '')
 
@@ -281,6 +280,10 @@ class SchemaForm(dbc.Card):
         # Construct form
         if 'properties' in schema:
             self.make_form(properties=schema['properties'])
+
+        self.body = dbc.Collapse(self.body, id={"type": 'collapsible-body', "container": f"{self.container.id}" ,"index": f'{self.id}-collapsible'}, is_open=True)
+        self.children = [self.header, self.body]
+
 
     def make_form(self, properties):
         """Iterates over properties of schema and assembles form items"""
@@ -417,6 +420,29 @@ class SchemaFormContainer(html.Div):
             State(dict(_args_dict, data_type='name'), 'value'),
             State(dict(_args_dict, data_type='number'), 'value'),
         ]
+
+        self.parent_app.clientside_callback(
+            """
+            function(n_clicks, state){
+
+                 //const element = document.getElementById(JSON.stringify(ids, Object.keys(ids).sort()))
+
+                 ctx = dash_clientside.callback_context
+                 
+                 if (typeof ctx.triggered[0] === "undefined"){
+                     return dash_clientside.no_update
+                 }
+                 if (n_clicks){
+                     return !state
+                 }
+                 return dash_clientside.no_update
+
+            }
+            """,
+            Output({"type":'collapsible-body', "container": f'{self.id}', "index": MATCH}, 'is_open'),
+            [Input({"type": 'collapsible-toggle', "container": f'{self.id}', "index": MATCH}, 'n_clicks')],
+            [State({"type":'collapsible-body', "container": f'{self.id}', "index": MATCH}, 'is_open')]
+        )
 
         @self.parent_app.callback(
             Output(f'{self.id}-output-update-finished-verification', 'children'),
