@@ -331,7 +331,7 @@ class SchemaForm(dbc.Card):
                         iform = SchemaForm(schema=schema, key=f'{k}-{index}', parent_form=self)
                         value.append(iform)
 
-                # If item is an array of strings
+                # If item is an array of strings (undefined 'minItems')
                 elif isinstance(v['items'], dict):
                     value = v
 
