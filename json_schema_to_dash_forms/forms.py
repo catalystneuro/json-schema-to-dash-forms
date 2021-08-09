@@ -306,30 +306,32 @@ class SchemaForm(dbc.Card):
                 self.body.children.append(item)
                 continue
 
-            # If item is a field
+            # If item is an array
             if 'type' in v and (v['type'] == 'array'):
                 # v['type'] == array requires also v['items'] definition
                 if v.get('items') is None:
                     warnings.warn(f"Schema badly defined for field '{k}'. Array fields require definition of 'type'. Skipping it...")
                     continue
 
-                # If field is an array of subforms, e.g. ImagingPlane.optical_channels
+                # If item is an array of subforms, it should have 'minItems'
                 if 'minItems' in v: 
                     value = []
-                    if '$ref' in v['items'][0]:  # search for reference somewhere else in the root schema
-                        for i in v['items'][0]['$ref'].split('/'):
+                    if '$ref' in v['items']:  # search for reference somewhere else in the root schema
+                        for i in v['items']['$ref'].split('/'):
                             if i == '#':
                                 aux = self.container.schema
                             else:
                                 aux = aux.get(i)
                         schema = aux
                     else:
-                        schema = v['items'][0]
+                        schema = v['items']
+                    
+                    # Creates 'minItems' number of subforms
                     for index in range(v['minItems']):
                         iform = SchemaForm(schema=schema, key=f'{k}-{index}', parent_form=self)
                         value.append(iform)
 
-                # If field is an array of strings, e.g. NWBFile.experimenter
+                # If item is an array of strings
                 elif isinstance(v['items'], dict):
                     value = v
 
@@ -337,11 +339,11 @@ class SchemaForm(dbc.Card):
                 else:
                     value = v
 
-            # If field is a simple input field, e.g. description
+            # If item is a simple input field, e.g. description
             elif 'type' in v and v['type'] in ['string', 'number', 'boolean']:
                 value = v
 
-            # If field is something not yet implemented
+            # If item is something not yet implemented
             else:
                 warnings.warn(f'Field input not yet implemented for {k}. Skipping it...')
                 continue
