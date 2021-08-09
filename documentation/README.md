@@ -356,9 +356,7 @@ BooleanForm:
       "type": "array",
       "minItems": 2,
       "maxItems": 2,
-      "items": [
-        {"$ref":  "#/definitions/OpticalChannel"}
-      ]
+      "items": {"$ref":  "#/definitions/OpticalChannel"}
     }
   }
 }
