@@ -1,7 +1,5 @@
 import dash
 import dash_bootstrap_components as dbc
-import dash_html_components as html
-import json
 from pathlib import Path
 from json_schema_to_dash_forms import SchemaFormContainer
 from dash.dependencies import Input, Output, State
@@ -60,7 +58,7 @@ app.layout = dbc.Container([
             dbc.Textarea(
                 id='display_results',
                 className='string_input',
-                bs_size="lg",
+                size="lg",
                 readOnly=True,
                 style={'font-size': '16px', 'min-height': '250px', 'max-height': '500px'}
             ),
@@ -105,10 +103,10 @@ def show_data_from_internal_dict(trigger, is_open):
     if not trigger:
         return dash.no_update
 
-    alerts, output = my_form.data_to_nested() # Read internal dict and get missing required fields and output nested dict
+    alerts, output = my_form.data_to_nested()  # Read internal dict and get missing required fields and output nested dict
 
     if alerts is not None:
-        return True, alerts, '' # If any missing fields return alerts
+        return True, alerts, ''  # If any missing fields return alerts
 
     # Else show json data 
     json_string = json.dumps(output, indent=4)

@@ -82,7 +82,7 @@
 		            "description": "subforms children array w/ size defined by min/max items and referenced by definitions",
 		            "minItems": 2,
 		            "maxItems": 2,
-		            "items": [{"$ref":  "#/definitions/ChildrenExample"}]
+		            "items": {"$ref":  "#/definitions/ChildrenExample"}
 	    		}
 	    	}
 	    }
