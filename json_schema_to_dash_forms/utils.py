@@ -3,7 +3,7 @@ from datetime import datetime
 
 import dash
 import dash_bootstrap_components as dbc
-import dash_html_components as html
+from dash import html
 from dash.dependencies import Input, Output, State
 from dash_cool_components import KeyedFileBrowser
 from pathlib import Path
@@ -56,15 +56,9 @@ class FileBrowserComponent(html.Div):
 
         # Button part
         input_group = dbc.InputGroup([
-            dbc.InputGroupAddon(
-                dbc.Button(button_text, color='dark', id="button_file_browser_" + id_suffix),
-                addon_type="prepend",
-            ),
+            dbc.Button(button_text, color='dark', id="button_file_browser_" + id_suffix),
             dbc.Input(id="chosen-filebrowser-" + id_suffix, placeholder=""),
-            dbc.InputGroupAddon(
-                dbc.Button('Submit', color='dark', id='submit-filebrowser-' + id_suffix),
-                addon_type='prepend',
-            ),
+            dbc.Button('Submit', color='dark', id='submit-filebrowser-' + id_suffix)
         ])
 
         # Collapsible part - file browser

@@ -3,8 +3,8 @@ import warnings
 
 import dash
 import dash_bootstrap_components as dbc
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc
+from dash import html
 import numpy as np
 from dash.dependencies import Input, Output, State, ALL, MATCH
 from dash_cool_components import TagInput, DateTimePicker
@@ -14,7 +14,7 @@ from collections import Counter
 from .utils import make_filebrowser_modal
 
 
-class SchemaFormItem(dbc.FormGroup):
+class SchemaFormItem(dbc.Form):
     def __init__(self, label, value, input_id, parent, required=False):
         super().__init__([])
 
@@ -107,7 +107,7 @@ class SchemaFormItem(dbc.FormGroup):
             field_input = dbc.Textarea(
                 id=compound_id,
                 className='string_input',
-                bs_size="lg",
+                size="lg",
                 style={'font-size': '16px'}
             )
 
@@ -145,7 +145,7 @@ class SchemaFormItem(dbc.FormGroup):
             field_input = html.Div([
                 dbc.InputGroup([
                     input_path,
-                    dbc.InputGroupAddon(btn_open_filebrowser, addon_type="append"),
+                    btn_open_filebrowser,
                 ]),
                 modal
             ])
@@ -155,7 +155,7 @@ class SchemaFormItem(dbc.FormGroup):
             default = value.get('default', False)
             field_input = dbc.Checkbox(
                 id=compound_id,
-                checked=default
+                value=default
             )
 
         else:
@@ -268,7 +268,8 @@ class SchemaForm(dbc.Card):
 
         header_text = schema.get('title', self.id.split('-')[-1])
         self.header = dbc.CardHeader(
-            [dbc.Button(html.H4(header_text, style={"color": 'black'}, className="title_" + key), color='link', id={"type": "collapsible-toggle", "container": f"{self.container.id}", 'index': f'{self.id}-collapsible'})],
+            [dbc.Button(html.H4(header_text, style={"color": 'black'}, className="title_" + key), color='link',
+                        id={"type": "collapsible-toggle", "container": f"{self.container.id}", 'index': f'{self.id}-collapsible'})],
             style={'padding': '10px'}
         )
         self.body = dbc.CardBody([])
@@ -281,9 +282,10 @@ class SchemaForm(dbc.Card):
         if 'properties' in schema:
             self.make_form(properties=schema['properties'])
 
-        self.body = dbc.Collapse(self.body, id={"type": 'collapsible-body', "container": f"{self.container.id}" ,"index": f'{self.id}-collapsible'}, is_open=True)
+        self.body = dbc.Collapse(self.body,
+                                 id={"type": 'collapsible-body', "container": f"{self.container.id}", "index": f'{self.id}-collapsible'},
+                                 is_open=True)
         self.children = [self.header, self.body]
-
 
     def make_form(self, properties):
         """Iterates over properties of schema and assembles form items"""
@@ -314,7 +316,7 @@ class SchemaForm(dbc.Card):
                     continue
 
                 # If item is an array of subforms, it should have 'minItems'
-                if 'minItems' in v: 
+                if 'minItems' in v:
                     value = []
                     if '$ref' in v['items']:  # search for reference somewhere else in the root schema
                         for i in v['items']['$ref'].split('/'):
@@ -325,7 +327,7 @@ class SchemaForm(dbc.Card):
                         schema = aux
                     else:
                         schema = v['items']
-                    
+
                     # Creates 'minItems' number of subforms
                     for index in range(v['minItems']):
                         iform = SchemaForm(schema=schema, key=f'{k}-{index}', parent_form=self)
@@ -388,8 +390,10 @@ class SchemaFormContainer(html.Div):
 
         # Hidden components that serve to trigger callbacks
         self.children_triggers = [
-            html.Div(id={'type': 'external-trigger-update-forms-values', 'index': id + '-external-trigger-update-forms-values'}, style={'display': 'none'}),
-            html.Div(id={'type': 'external-trigger-update-links-values', 'index': f'{id}-external-trigger-update-links-values'}, style={"display": "none"}),
+            html.Div(id={'type': 'external-trigger-update-forms-values', 'index': id + '-external-trigger-update-forms-values'},
+                     style={'display': 'none'}),
+            html.Div(id={'type': 'external-trigger-update-links-values', 'index': f'{id}-external-trigger-update-links-values'},
+                     style={"display": "none"}),
             html.Div(id=f'{id}-external-trigger-update-internal-dict', style={'display': 'none'}),
             html.Div(id=f'{id}-output-update-finished-verification', style={'display': 'none'}),
             html.Div(id=id + '-trigger-update-links-values', style={'display': 'none'}),
@@ -411,7 +415,7 @@ class SchemaFormContainer(html.Div):
 
         self.update_forms_values_callback_outputs = [
             Output(dict(_args_dict, data_type='path'), 'value'),
-            Output(dict(_args_dict, data_type='boolean'), 'checked'),
+            Output(dict(_args_dict, data_type='boolean'), 'value'),
             Output(dict(_args_dict, data_type='string'), 'value'),
             Output(dict(_args_dict, data_type='datetime'), 'defaultValue'),
             Output(dict(_args_dict, data_type='tags'), 'injectedTags'),
@@ -421,7 +425,7 @@ class SchemaFormContainer(html.Div):
         ]
         self.update_forms_values_callback_states = [
             State(dict(_args_dict, data_type='path'), 'value'),
-            State(dict(_args_dict, data_type='boolean'), 'checked'),
+            State(dict(_args_dict, data_type='boolean'), 'value'),
             State(dict(_args_dict, data_type='string'), 'value'),
             State(dict(_args_dict, data_type='datetime'), 'value'),
             State(dict(_args_dict, data_type='tags'), 'value'),
@@ -436,7 +440,7 @@ class SchemaFormContainer(html.Div):
                  //const element = document.getElementById(JSON.stringify(ids, Object.keys(ids).sort()))
 
                  ctx = dash_clientside.callback_context
-                 
+
                  if (typeof ctx.triggered[0] === "undefined"){
                      return dash_clientside.no_update
                  }
@@ -447,9 +451,9 @@ class SchemaFormContainer(html.Div):
 
             }
             """,
-            Output({"type":'collapsible-body', "container": f'{self.id}', "index": MATCH}, 'is_open'),
+            Output({"type": 'collapsible-body', "container": f'{self.id}', "index": MATCH}, 'is_open'),
             [Input({"type": 'collapsible-toggle', "container": f'{self.id}', "index": MATCH}, 'n_clicks')],
-            [State({"type":'collapsible-body', "container": f'{self.id}', "index": MATCH}, 'is_open')]
+            [State({"type": 'collapsible-body', "container": f'{self.id}', "index": MATCH}, 'is_open')]
         )
 
         @self.parent_app.callback(
@@ -457,7 +461,7 @@ class SchemaFormContainer(html.Div):
             [Input(f'{self.id}-external-trigger-update-internal-dict', 'children')],
             [
                 State({'type': 'metadata-input', 'container_id': self.id, 'data_type': 'path', 'index': ALL}, 'value'),
-                State({'type': 'metadata-input', 'container_id': self.id, 'data_type': 'boolean', 'index': ALL}, 'checked'),
+                State({'type': 'metadata-input', 'container_id': self.id, 'data_type': 'boolean', 'index': ALL}, 'value'),
                 State({'type': 'metadata-input', 'container_id': self.id, 'data_type': 'string', 'index': ALL}, 'value'),
                 State({'type': 'metadata-input', 'container_id': self.id, 'data_type': 'datetime', 'index': ALL}, 'value'),
                 State({'type': 'metadata-input', 'container_id': self.id, 'data_type': 'tags', 'index': ALL}, 'value'),
@@ -531,7 +535,8 @@ class SchemaFormContainer(html.Div):
             if context['type'] == 'external-trigger-update-forms-values' and all((trg is None) or trg == [] for trg in trigger):
                 raise dash.exceptions.PreventUpdate
 
-            if context['type'] == 'internal-trigger-update-forms-values' and all((trg is None) or trg == [] or trg == '' for trg in trigger_all):
+            if context['type'] == 'internal-trigger-update-forms-values' and all(
+                    (trg is None) or trg == [] or trg == '' for trg in trigger_all):
                 raise dash.exceptions.PreventUpdate
 
             output_path = []
@@ -587,7 +592,8 @@ class SchemaFormContainer(html.Div):
             if 'type' in trigger_source:
                 trigger_source = json.loads(trigger_source)['type']
 
-            if trigger_source == 'external-trigger-update-links-values' and all((trg is None) or trg == [] or trg == '' for trg in trigger_all):
+            if trigger_source == 'external-trigger-update-links-values' and all(
+                    (trg is None) or trg == [] or trg == '' for trg in trigger_all):
                 raise dash.exceptions.PreventUpdate
             if trigger_source == f'{self.id}-trigger-update-links-values' and trigger is None:
                 raise dash.exceptions.PreventUpdate
@@ -640,7 +646,7 @@ class SchemaFormContainer(html.Div):
         """Update data in the internal mapping dictionary of this Container"""
         if key is None:
             key = self.id
-    
+
         # Update dict with incoming data
         for k, v in data.items():
             if k in self.skiped_forms:
@@ -700,7 +706,8 @@ class SchemaFormContainer(html.Div):
 
         for k, v in self.data.items():
             field_value = v['value']
-            if v['required'] and (field_value is None or (isinstance(field_value, str) and field_value.isspace()) or field_value == '' or (str(field_value) == str(self.root_path))):
+            if v['required'] and (field_value is None or (isinstance(field_value, str) and field_value.isspace()) or field_value == '' or (
+                    str(field_value) == str(self.root_path))):
                 empty_required_fields.append(k)
                 alert_children.append(html.A(
                     k,
@@ -719,7 +726,7 @@ class SchemaFormContainer(html.Div):
                     elif element != master_key_name:
                         curr_dict = {element: curr_dict}
                     else:
-                    #if element == master_key_name:
+                        # if element == master_key_name:
                         dicts_list.append(curr_dict)
 
         for e in dicts_list:
